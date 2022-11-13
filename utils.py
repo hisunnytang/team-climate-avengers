@@ -11,6 +11,11 @@ from tenacity import (
 from typing import List
 import numpy as np
 
+from trafilatura.settings import use_config
+trafilatura_cfg = use_config()
+trafilatura_cfg.set("DEFAULT", "EXTRACTION_TIMEOUT", "0")
+
+
 nltk.download("punkt")
 
 
