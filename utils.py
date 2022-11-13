@@ -94,31 +94,31 @@ def retrieve_text_embeddings(url_list: List[str],):
     :return: links that didn't work out
     """
     failed_links = []
-    for link in tqdm(nasa_links):
+    for link in url_list:
+        
+        text = extract_text_from_url(link)
 
-    text = extract_text_from_url(link)
+        try:
+          df = get_df_with_chunks_embedded(text)
+        except:
+          failed_links.append(link)
 
-    try:
-      df = get_df_with_chunks_embedded(text)
-    except:
-      failed_links.append(link)
+        total_request += len(df)
 
-    total_request += len(df)
+        df['source'] = link
+        dfs.append(df)
 
-    df['source'] = link
-    dfs.append(df)
+        if total_request >= 30:
+          sleep_now = True
 
-    if total_request >= 30:
-      sleep_now = True
+        # we have limit on the requests per minute
+        if sleep_now:
 
-    # we have limit on the requests per minute
-    if sleep_now:
-
-      # reset total_request
-      total_request = 0
-      print(f"total request = {total_request}")
-      sleep_now = False
-      time.sleep(60)
+          # reset total_request
+          total_request = 0
+          print(f"total request = {total_request}")
+          sleep_now = False
+          time.sleep(60)
     return pd.concat(dfs), failed_links
 
 
