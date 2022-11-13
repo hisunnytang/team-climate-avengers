@@ -102,6 +102,7 @@ def retrieve_text_embeddings(url_list: List[str],):
     total_request = 0
     failed_links = []
     dfs = []
+    sleep_now = False
     for link in url_list:
         
         text = extract_text_from_url(link)
