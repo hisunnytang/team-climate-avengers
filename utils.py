@@ -48,53 +48,53 @@ def extract_text_from_url(url: str) -> str:
   
  
 def get_df_with_chunks_embedded(text: str) -> pd.DataFrame:
-  """
-  It splits the text into chunks, embeds each chunk, and returns a dataframe with the chunks and their embeddings
+    """
+    It splits the text into chunks, embeds each chunk, and returns a dataframe with the chunks and their embeddings
 
-  :param text: The text to be split into chunks
-  :type text: str
-  :return: A dataframe with the chunks as rows and the search embedding as a column.
-  """
-  # Split the text into sentences (could also use TextWrap or something similar)
-  sentences = nltk.sent_tokenize(text)
+    :param text: The text to be split into chunks
+    :type text: str
+    :return: A dataframe with the chunks as rows and the search embedding as a column.
+    """
+    # Split the text into sentences (could also use TextWrap or something similar)
+    sentences = nltk.sent_tokenize(text)
 
-  # Determine the chunk size (empirically here 6 worked for this corpus)
-  """ 
-  You can also use GPT2 tokenizer in a smart way to chunk the test for example: 
-  tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
-  def count_tokens(text: str) -> int:
+    # Determine the chunk size (empirically here 6 worked for this corpus)
+    """ 
+    You can also use GPT2 tokenizer in a smart way to chunk the test for example: 
+    tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
+    def count_tokens(text: str) -> int:
       return len(tokenizer.encode(text))
-  """
-  chunk_size = len(sentences) // 6
+    """
+    chunk_size = len(sentences) // 6
 
-  # Split the list of sentences into chunks
-  chunks = [
+    # Split the list of sentences into chunks
+    chunks = [
       sentences[i : i + chunk_size]
       for i in range(0, len(sentences), chunk_size)
-  ]
+    ]
 
-  # Concatenate the sentences in each chunk into a single string
-  chunks = [" ".join(chunk) for chunk in chunks]
+    # Concatenate the sentences in each chunk into a single string
+    chunks = [" ".join(chunk) for chunk in chunks]
 
-  # Create a dataframe with the chunks as rows
-  df_with_chunks = pd.DataFrame(chunks, columns=["chunk"])
+    # Create a dataframe with the chunks as rows
+    df_with_chunks = pd.DataFrame(chunks, columns=["chunk"])
 
-  df_with_chunks["search"] = df_with_chunks.chunk.apply(
+    df_with_chunks["search"] = df_with_chunks.chunk.apply(
       lambda x: get_embedding(x, engine="text-search-davinci-doc-001")
-  )
+    )
 
-  return df_with_chunks
+    return df_with_chunks
 
 
- def retrieve_text_embeddings(url_list: List[str],):
-   """
-  Create a database of embedding of credible source
-  :param url_list: the list URL of the article to extract text from
-  :return: pandas dataframe with the gpt3 embeddings
-  :return: links that didn't work out
-  """
-  failed_links = []
-  for link in tqdm(nasa_links):
+def retrieve_text_embeddings(url_list: List[str],):
+    """
+    Create a database of embedding of credible source
+    :param url_list: the list URL of the article to extract text from
+    :return: pandas dataframe with the gpt3 embeddings
+    :return: links that didn't work out
+    """
+    failed_links = []
+    for link in tqdm(nasa_links):
 
     text = extract_text_from_url(link)
 
@@ -119,7 +119,7 @@ def get_df_with_chunks_embedded(text: str) -> pd.DataFrame:
       print(f"total request = {total_request}")
       sleep_now = False
       time.sleep(60)
-  return pd.concat(dfs), failed_links
+    return pd.concat(dfs), failed_links
 
 
 def cosine_similarity(a, b):
