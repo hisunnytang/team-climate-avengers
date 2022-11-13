@@ -101,6 +101,7 @@ def retrieve_text_embeddings(url_list: List[str],):
     """
     total_request = 0
     failed_links = []
+    dfs = []
     for link in url_list:
         
         text = extract_text_from_url(link)
@@ -109,6 +110,7 @@ def retrieve_text_embeddings(url_list: List[str],):
           df = get_df_with_chunks_embedded(text)
         except:
           failed_links.append(link)
+          continue
 
         total_request += len(df)
 
