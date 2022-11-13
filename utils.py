@@ -99,6 +99,7 @@ def retrieve_text_embeddings(url_list: List[str],):
     :return: pandas dataframe with the gpt3 embeddings
     :return: links that didn't work out
     """
+    total_request = 0
     failed_links = []
     for link in url_list:
         
